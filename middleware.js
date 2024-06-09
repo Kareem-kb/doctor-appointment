@@ -3,17 +3,14 @@ import { getToken } from "next-auth/jwt";
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
-  console.log(
-    request.nextUrl.pathname,
-    "request.nextUrl.pathname",
-    request.nextUrl.pathname.startsWith("/patient"),
-  );
+
+  console.log(pathname, "pathname", pathname.startsWith("/patient"));
 
   // Paths that do not require authentication
   const publicPaths = ["/login", "/custom-error", "/api/auth", "/register"];
- 
+
   // Check if the path is one of the public paths
-  if (publicPaths.some((path) => pathname.startsWith(path)) || pathname == "/") {
+  if (publicPaths.some(path => pathname.startsWith(path)) || pathname === "/") {
     return NextResponse.next();
   }
 
@@ -24,48 +21,38 @@ export async function middleware(request) {
     cookieName: "next-auth.session-token",
   });
 
-  if (!token) return NextResponse.redirect(new URL("/login", request.url));
-
-  // Check the role and redirect based on the role
-  switch (token.role) {
-    case "Doctor":
-      if (
-        !request.nextUrl.pathname.startsWith("/doctor") &&
-        !request.nextUrl.pathname.startsWith("/api/auth/session")
-      ) {
-        return NextResponse.redirect(new URL("/doctor/dashboard", request.url));
-      }
-      break;
-    case "Patient":
-      if (!request.nextUrl.pathname.startsWith("/patient")) {
-        return NextResponse.redirect(
-          new URL("/patient/dashboard", request.url),
-        );
-      }
-      break;
-    case "Hospital":
-      if (
-        !request.nextUrl.pathname.startsWith("/api/auth/session") &&
-        !request.nextUrl.pathname.startsWith("/hospital")
-      ) {
-        return NextResponse.redirect(
-          new URL("/hospital/dashboard", request.url),
-        );
-      }
-      break;
-    default:
-      return NextResponse.redirect(new URL("/login", request.url));
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // Redirect based on the role
+  const roleRedirects = {
+    Doctor: "/doctor/dashboard",
+    Patient: "/patient/dashboard",
+    Hospital: "/hospital/dashboard"
+  };
 
+  const rolePathPrefixes = {
+    Doctor: ["/doctor", "/api/auth/session"],
+    Patient: ["/patient"],
+    Hospital: ["/hospital", "/api/auth/session"]
+  };
+
+  const allowedPaths = rolePathPrefixes[token.role] || [];
+
+  if (!allowedPaths.some(path => pathname.startsWith(path))) {
+    return NextResponse.redirect(new URL(roleRedirects[token.role], request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
     "/",
-    "/patient/:path*", 
-    "/doctor/:path*", 
-    "/hospital/:path*", 
+    "/patient/:path*",
+    "/doctor/:path*",
+    "/hospital/:path*",
     "/api/auth/:path*"
   ],
 };

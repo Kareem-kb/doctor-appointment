@@ -51,7 +51,7 @@ function DocRegister() {
 
     onSubmit: async (values) => {
       try {
-        const res = await fetch("http://localhost:3000/api/hospital/docregister", {
+        const res = await fetch("/api/hospital/docregister", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -195,7 +195,6 @@ function DocRegister() {
                           </p>
                         ) : null}
                       </div>{" "}
-
                       <div className="mb-4">
                         {" "}
                         <ListInput

@@ -11,7 +11,6 @@ import TextAreaField from "@/app/ui/inputs/TextAreaField";
 import ListInput from "@/app/ui/inputs/ListInput";
 import Link from "next/link";
 
-
 export default function RegisterPage() {
   const router = useRouter();
 
@@ -42,7 +41,7 @@ export default function RegisterPage() {
 
     onSubmit: async (values) => {
       try {
-        const res = await fetch("http://localhost:3000/api/register", {
+        const res = await fetch("/api/register", {
           method: "POST",
           headers: {
             "Content-type": "application/json",
@@ -386,10 +385,7 @@ export default function RegisterPage() {
           <div className="mb-4 ">
             <p className="ml-2 text-sm text-gray-500">
               Have an account already?{" "}
-              <Link
-                href="/login"
-                className="hover:text-primary"
-              >
+              <Link href="/login" className="hover:text-primary">
                 Log in
               </Link>
             </p>
