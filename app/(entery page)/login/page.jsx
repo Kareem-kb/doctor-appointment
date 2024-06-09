@@ -1,7 +1,8 @@
 "use client";
 
 import { useSession, signIn } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { FiLoader } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import logo from "@/public/images/logo.png";
@@ -13,10 +14,10 @@ import Link from "next/link";
 export default function LoginPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (session) {
-      console.log("Redirecting to dashboard...");
       router.push("/patient/dashboard");
     }
   }, [session, router]);
@@ -29,23 +30,32 @@ export default function LoginPage() {
         .min(6, "Password must be at least 6 characters")
         .required("Required"),
     }),
-    onSubmit: async (values) => {
-
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      setIsSubmitting(true);
       try {
         const res = await signIn("credentials", {
           email: values.email,
           password: values.password,
           redirect: false,
         });
-        console.log("signIn response:", res); // Log response from signIn
 
         if (!res.error) {
           router.push("/patient/dashboard");
         } else {
-          console.error("Login failed:", res.error);
+          setIsSubmitting(false);
+          if (res.error === "User not found") {
+            setErrors({ email: "Email not found", password: "" });
+          } else if (res.error === "Incorrect password") {
+            setErrors({ email: "", password: "Incorrect password" });
+          } else {
+            setErrors({ email: "Login failed", password: "Login failed" });
+          }
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setSubmitting(false);
+        setIsSubmitting(false);
       }
     },
   });
@@ -87,13 +97,22 @@ export default function LoginPage() {
               {formik.errors.password}
             </p>
           )}
-          <div className="flex justify-center">
+          <div className="flex justify-center ">
             <button
               type="submit"
-              className="mt-4 w-40 place-self-center rounded-md bg-primary p-2 text-lg text-white"
+              className={`mt-4 flex items-center justify-center place-self-center rounded-md bg-primary p-2 text-lg text-white transition-all duration-300 ease-in-out ${
+                isSubmitting ? "w-36" : "w-28"
+              }`}
               disabled={formik.isSubmitting}
             >
-              Login
+              <span
+                className={`transition-transform duration-300 ease-in-out ${
+                  isSubmitting ? "mr-2 translate-x-1 transform" : ""
+                }`}
+              >
+                Login
+              </span>
+              {isSubmitting && <FiLoader className="animate-spin-slow ml-2" />}
             </button>
           </div>
           <div className="mt-4">

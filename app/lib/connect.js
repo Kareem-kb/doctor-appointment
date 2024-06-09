@@ -3,15 +3,15 @@ import mongoose from "mongoose";
 const DATABASE = process.env.DATABASE_URL;
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
   try {
-    await mongoose.connect(DATABASE, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(DATABASE, {});
     console.log("Database is Connected");
   } catch (error) {
     console.error("Error connecting to database", error);
-    process.exit(1);
+    throw new Error("Could not connect to MongoDB");
   }
 };
 

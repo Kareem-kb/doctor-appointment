@@ -22,15 +22,13 @@ export default function Navlinks() {
       flex w-full flex-wrap items-center justify-between border px-3"
     >
       <div>
-        <Link href={"/patient/dashboard"}>
-          <Image
-            className=" cursor-pointer"
-            src={logo}
-            height={100}
-            width={100}
-            alt="Test Logo"
-          />
-        </Link>
+        <Image
+          src={logo}
+          width={200}
+          height={100} // adjust height to match the logo aspect ratio
+          priority
+          alt="test logo"
+        />
       </div>
       <div className="flex justify-center ">
         {links.map((link) => {

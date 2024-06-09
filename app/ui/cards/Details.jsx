@@ -1,50 +1,59 @@
 "use client";
+
 import React, { useState } from "react";
 import Image from "next/image";
 import { MdOutlineAddLocation } from "react-icons/md";
 import DoctorAvatar from "@/public/images/DoctorAvatar.jpg";
-import DatePicker from "react-datepicker";
-import setHours from "date-fns/setHours";
-import setMinutes from "date-fns/setMinutes";
+import "react-datepicker/dist/react-datepicker.css";
+import CustomDatePicker from "@/app/ui/patient/datePicker";
 import { useSession } from "next-auth/react";
+import TextAreaField from "@/app/ui/inputs/TextAreaField";
+import { useRouter } from "next/navigation";
 
 const Details = ({ doctor }) => {
   const { data: session } = useSession();
+  const router = useRouter();
 
-  const [startDate, setStartDate] = useState(
-    setHours(setMinutes(new Date(), 30), 16),
-  );
-  const [message, setMessage] = useState("");
-  console.log(startDate, message, session.user?._id, doctor?._id);
+  const [startDate, setStartDate] = useState();
+  const [reasonToVisit, setReasonToVisit] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleScheduleAppointment = async () => {
+    // Separate date and time
+    const dateOnly = new Date(startDate);
+    dateOnly.setHours(0, 0, 0, 0);
+    const timeOnly = new Date(startDate);
+    timeOnly.setFullYear(1970, 0, 1); // Set to arbitrary date to represent time
+
     const appointmentData = {
-      time: startDate,
-      date: startDate,
-      patient: session.user.referenceId, 
+      time: timeOnly,
+      date: dateOnly,
+      patient: session.user.referenceId,
       doctor: doctor._id,
       hospital: doctor.hospital._id,
-      reasonToVisit: message,
+      reasonToVisit: reasonToVisit,
     };
 
     try {
-      const response = await fetch('/api/appointments', {
-        method: 'POST',
+      const response = await fetch("/api/appointments", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(appointmentData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to schedule appointment');
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to schedule appointment");
       }
 
       const data = await response.json();
-      console.log('Appointment scheduled successfully:', data);
-      // Optionally, show a success message or redirect the user
+      setErrorMessage(""); // Clear any previous error message
+      router.push("/patient/dashboard");
     } catch (error) {
-      console.error('Error scheduling appointment:', error.message);
+      console.error("Error scheduling appointment:", error.message);
+      setErrorMessage(error.message); // Set the error message
       // Optionally, show an error message to the user
     }
   };
@@ -82,9 +91,9 @@ const Details = ({ doctor }) => {
           <p className="text-gray-500">{doctor.theAbout}</p>
         </div>
 
-        <div className="flex flex-row gap-3">
-          <div className="w-1/2 bg-white p-4">
-            <h3 className="mb-2">Details</h3>
+        <div className="flex flex-row gap-3 text-xs">
+          <div className="w-1/2 bg-white p-3">
+            <h3 className="mb-2 text-base">Details</h3>
             <ul className="flex flex-col gap-3">
               <li className="gap-12">
                 <h4 className="text-gray-500">Gender:</h4>
@@ -100,32 +109,27 @@ const Details = ({ doctor }) => {
               </li>
             </ul>
           </div>
-          <div className="w-1/2 rounded-lg bg-white p-4 shadow-md">
-            <h3 className="mb-2 text-xl font-bold">Book an Appointment</h3>
-            <div className="w-full rounded-lg border p-2">
-              <DatePicker
-                className="mb-4"
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                showTimeSelect
-                excludeTimes={[
-                  setHours(setMinutes(new Date(), 0), 17),
-                  setHours(setMinutes(new Date(), 30), 18),
-                  setHours(setMinutes(new Date(), 30), 19),
-                  setHours(setMinutes(new Date(), 30), 17),
-                ]}
-                dateFormat="MMMM d, yyyy h:mm aa"
+          <div className="mx-auto w-full max-w-md rounded-lg bg-white p-3 ">
+            <h3 className="mb-4 text-base text-black">Book an Appointment</h3>
+            <div className="space-y-4">
+              <CustomDatePicker
+                startDate={startDate}
+                setStartDate={setStartDate}
               />
-              <textarea
-                id="message"
-                rows="5"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-                placeholder="Your message..."
-              ></textarea>
+              <TextAreaField
+                cols="20"
+                id="reasonToVisit"
+                name="reasonToVisit"
+                onChange={(e) => setReasonToVisit(e.target.value)}
+                value={reasonToVisit}
+                label="Reason for the visit"
+                className="text-xs"
+              />
+              {errorMessage && (
+                <div className="text-sm text-red-500">{errorMessage}</div>
+              )}
               <button
-                className="float-right mt-4 rounded-lg bg-blue-500 px-3 py-1 text-white hover:bg-blue-500 focus:outline-none"
+                className="w-full rounded-lg bg-blue-500 py-2 text-white transition-colors hover:bg-blue-600 focus:outline-none"
                 type="button"
                 onClick={handleScheduleAppointment}
               >

@@ -57,19 +57,7 @@ export async function middleware(request) {
       return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // // If no token exists, and it's not a public path, redirect to login
-  // if (
-  //   !token &&
-  //   (pathname.startsWith("/patient/dashboard") ||
-  //     pathname.startsWith("/patient/personal"))
-  // ) {
-  //   const url = req.nextUrl.clone();
-  //   url.pathname = "/login";
-  //   return NextResponse.redirect(url);
-  // }
 
-  // If a token exists, or it's a public path, continue
-  // return NextResponse.next();
 }
 
 export const config = {

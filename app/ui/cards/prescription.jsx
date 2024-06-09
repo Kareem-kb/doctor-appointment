@@ -18,24 +18,29 @@ const PrescriptionCard = ({ prescriptions }) => {
       {prescriptions.map((prescription, index) => (
         <div
           key={index}
-          className="mb-4 transform cursor-pointer rounded-lg border p-4 shadow-md transition-transform"
+          className="mb-4 transform cursor-pointer rounded-lg border p-2 shadow-md transition-transform"
           onClick={() => toggleExpand(index)}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-around">
             <div className="flex items-center">
               <span className="text-sky-300">
                 <FaPrescriptionBottleMedical />
               </span>
-              <h4 className=" text-sm ">
+              <h4 className=" text-xs text-gray-500">
                 {" "}
                 {prescription.doctorSpecialization}
               </h4>
             </div>
             <div className="flex items-center">
-              <p className="mr-4 text-sm font-light text-gray-500">
-                {prescription.doctorName}
-              </p>
-              <p className="mr-4 text-sm font-light text-gray-500">
+              <h3 className="text-sm font-medium text-sky-300">
+                Dr
+                <span className=" text-xs font-light text-gray-500">
+                  {prescription.doctorName}
+                </span>
+              </h3>{" "}
+            </div>
+            <div>
+              <p className=" text-xs font-light text-gray-500">
                 {formatDate(prescription.visitTime)}
               </p>
             </div>
@@ -45,14 +50,16 @@ const PrescriptionCard = ({ prescriptions }) => {
               expandedIndex === index ? "max-h-screen" : "max-h-0"
             }`}
           >
-            <div className="mt-4 flex justify-between">
+            <div className="mt-4 flex justify-between px-2">
               <div>
-                <h4 className="font-light text-gray-500">Description</h4>
+                <h3 className="text-sm font-light text-gray-500">
+                  Description
+                </h3>
                 <p className="text-sm">{prescription.description}</p>
               </div>
               <div>
-                <h4 className="font-light text-gray-500">Medicines</h4>
-                <p className="text-sm">{prescription.medicines.join(", ")}</p>
+                <h4 className="text-sm font-light text-gray-500">Medicines</h4>
+                <p className="text-sm">{prescription.medicines.join(" _h ")}</p>
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ import DoctList from "@/app/ui/hospital/cards/DoctList";
 export default async function HDashboard() {
   return (
     <div className="max-w-screen-sm	m-auto">
-      <div className="mt-10 flex items-center justify-center">
+      <div className="mt-5 flex items-center justify-center">
         <DetailCard />
       </div>
       <DoctList />

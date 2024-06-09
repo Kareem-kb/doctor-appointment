@@ -9,18 +9,25 @@ const UserProfile = () => {
   const [userData, setUserData] = useState(null);
   const [referenceData, setReferenceData] = useState(null);
   const [prescriptions, setPrescriptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchPrescriptions = async (referenceId) => {
     try {
-        const response = await fetch(`/api/prescriptions?patientId=${referenceId}`);
-        const data = await response.json();
-        console.log(data)
-        setPrescriptions(data);
+      const response = await fetch(
+        `/api/prescriptions?patientId=${referenceId}`,
+      );
+      const data = await response.json();
+      const prescriptionsWithDoctorNames = data.map((prescription) => ({
+        ...prescription,
+        doctorName: `${prescription.doctor.firstName} ${prescription.doctor.lastName}`,
+      }));
+      setPrescriptions(prescriptionsWithDoctorNames);
+      setIsLoading(false);
     } catch (error) {
-        console.error("Error fetching prescriptions:", error.message);
+      console.error("Error fetching prescriptions:", error.message);
+      setIsLoading(false);
     }
   };
-
 
   useEffect(() => {
     if (session?.user?._id) {
@@ -30,11 +37,12 @@ const UserProfile = () => {
           setUserData(data.user);
           setReferenceData(data.referenceData);
           fetchPrescriptions(data.user?.referenceId);
-
         })
-        .catch((error) => console.error("Error fetching user data:", error));
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+          setIsLoading(false);
+        });
     }
-
   }, [session]);
 
   const formatDate = (dateString) => {
@@ -42,35 +50,6 @@ const UserProfile = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const rescriptions = [
-    {
-      description: "Blood pressure medication",
-      doctorName: "Dr. John Doe",
-      doctorSpecialization: "Cardiology",
-      visitTime: "2023-11-30T00:00:00.000Z",
-      daysAgo: 3,
-      medicines: ["Lisinopril", "Amlodipine"],
-      patient: "patient_id_1",
-    },
-    {
-      description: "Diabetes management",
-      doctorName: "Dr. Jane Smith",
-      doctorSpecialization: "Endocrinology",
-      visitTime: "2023-11-28T00:00:00.000Z",
-      daysAgo: 5,
-      medicines: ["Metformin", "Insulin"],
-      patient: "patient_id_1",
-    },
-    {
-      description: "Cholesterol control",
-      doctorName: "Dr. Emma Brown",
-      doctorSpecialization: "General Medicine",
-      visitTime: "2023-11-25T00:00:00.000Z",
-      daysAgo: 8,
-      medicines: ["Atorvastatin"],
-      patient: "patient_id_1",
-    },
-  ];
   return (
     <div className="container mx-auto p-4">
       <div className="flex h-screen justify-between gap-5">
@@ -142,12 +121,43 @@ const UserProfile = () => {
               </div>
             </>
           ) : (
-            <p>Loading...</p>
+            <div className="animate-pulse">
+              <div className="flex flex-row flex-wrap gap-x-6 gap-y-1">
+                {Array(8)
+                  .fill()
+                  .map((_, index) => (
+                    <li key={index} className="flex flex-col space-y-2">
+                      <div className="h-4 w-24 rounded bg-gray-300"></div>
+                      <div className="h-4 w-32 rounded bg-gray-300"></div>
+                    </li>
+                  ))}
+              </div>
+              <div className="mt-3">
+                <div className="mb-2 h-4 w-32 rounded bg-gray-300"></div>
+              </div>
+            </div>
           )}
         </div>
         <div className="h-[85vh] w-2/3 overflow-auto rounded-lg bg-white p-8 shadow-md">
-          <h1 className="text-2xl font-bold">Prescriptions</h1>
-          <PrescriptionList prescriptions={prescriptions} />
+          <h1 className="text-2xl font-bold mb-2">Prescriptions</h1>
+          {isLoading ? (
+            <>
+              {Array(8)
+                .fill()
+                .map((_, index) => (
+                  <div
+                    key={index}
+                    className="mb-4 flex animate-pulse space-x-4 "
+                  >
+                    <div className="h-8 w-1/3 rounded bg-gray-300"></div>
+                    <div className="h-5 w-1/4 rounded bg-gray-300"></div>
+                    <div className="h-5 w-1/2 rounded bg-gray-300"></div>
+                  </div>
+                ))}
+            </>
+          ) : (
+            <PrescriptionList prescriptions={prescriptions} />
+          )}
         </div>
       </div>
     </div>

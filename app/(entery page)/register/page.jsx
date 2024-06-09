@@ -11,6 +11,7 @@ import TextAreaField from "@/app/ui/inputs/TextAreaField";
 import ListInput from "@/app/ui/inputs/ListInput";
 import Link from "next/link";
 
+
 export default function RegisterPage() {
   const router = useRouter();
 
@@ -80,7 +81,7 @@ export default function RegisterPage() {
   });
   return (
     <>
-      <div className="mx-auto flex flex-col items-center justify-center px-6 py-8  lg:py-4">
+      <div className="mx-auto flex flex-col items-center justify-center px-6 py-8  lg:py-4 ">
         <div className="w-full rounded-lg bg-white shadow sm:max-w-2xl md:mt-0 xl:p-0 ">
           <div className=" space-y-4 p-6 sm:p-8 md:space-y-6">
             <div className="flex items-center justify-between">
@@ -385,7 +386,10 @@ export default function RegisterPage() {
           <div className="mb-4 ">
             <p className="ml-2 text-sm text-gray-500">
               Have an account already?{" "}
-              <Link href="/login" className="hover:text-primary">
+              <Link
+                href="/login"
+                className="hover:text-primary"
+              >
                 Log in
               </Link>
             </p>

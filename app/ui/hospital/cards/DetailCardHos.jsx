@@ -20,7 +20,6 @@ const DetailCard = () => {
         .catch((error) => console.error("Error fetching user data:", error));
     }
   }, [session]);
-  console.log(referenceData);
 
   return (
     <div className="container mx-auto rounded-md bg-white p-4">
@@ -46,7 +45,27 @@ const DetailCard = () => {
           </div>
         </div>
       ) : (
-        <p>Loading...</p>
+        <div className="container mx-auto animate-pulse rounded-md bg-white p-4">
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-row items-center p-4 text-4xl font-bold text-sky-300">
+              <div className="flex items-center space-x-2">
+                <div className="h-10 w-10 rounded-full bg-gray-300"></div>
+                <div className="h-6 w-24 rounded bg-gray-300"></div>
+              </div>
+            </div>
+            <div>
+              <div className="mb-2 h-4 w-1/3 rounded bg-gray-300"></div>
+              <div className="h-4 w-full rounded bg-gray-300"></div>
+              <div className="mt-2 h-4 w-3/4 rounded bg-gray-300"></div>
+            </div>
+            <div className="flex flex-row gap-3">
+              <div>
+                <div className="mb-2 h-4 w-1/4 rounded bg-gray-300"></div>
+                <div className="h-4 w-2/3 rounded bg-gray-300"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

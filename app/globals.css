@@ -6,6 +6,8 @@ html,
 body,
 :root {
   height: 100%;
+  font-family: 'YourFontName', sans-serif;
+
 }
 
 @layer base {
@@ -15,3 +17,6 @@ body,
     margin: 0;
   }
 }
+
+
+

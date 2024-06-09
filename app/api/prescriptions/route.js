@@ -12,8 +12,11 @@ export async function POST(request) {
     const savedPrescription = await newPrescription.save();
     return NextResponse.json(savedPrescription, { status: 201 });
   } catch (error) {
-    console.error('Error creating prescription:', error.message);
-    return NextResponse.json({ error: 'Failed to create prescription' }, { status: 500 });
+    console.error("Error creating prescription:", error.message);
+    return NextResponse.json(
+      { error: "Failed to create prescription" },
+      { status: 500 },
+    );
   }
 }
 
@@ -21,14 +24,21 @@ export async function POST(request) {
 export async function GET(request) {
   await connectDB();
   const { searchParams } = new URL(request.url);
-  const patientId = searchParams.get('patientId');
+  const patientId = searchParams.get("patientId");
 
   try {
     const query = patientId ? { patient: patientId } : {};
-    const prescriptions = await Prescription.find(query).populate('doctor', 'name specialization');
+
+    const prescriptions = await Prescription.find(query).populate(
+      "doctor",
+      "firstName lastName specialization",
+    );
     return NextResponse.json(prescriptions, { status: 200 });
   } catch (error) {
-    console.error('Error fetching prescriptions:', error.message);
-    return NextResponse.json({ error: 'Failed to fetch prescriptions' }, { status: 500 });
+    console.error("Error fetching prescriptions:", error.message);
+    return NextResponse.json(
+      { error: "Failed to fetch prescriptions" },
+      { status: 500 },
+    );
   }
 }

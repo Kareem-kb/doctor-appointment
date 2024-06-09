@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSession, signOut } from 'next-auth/react';
+import { useState, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 export default function UserAccount() {
   const [isVisible, setIsVisible] = useState(false);
   const { data: session } = useSession();
   const [referenceData, setReferenceData] = useState({
-    firstName: '',
-    lastName: '',
+    firstName: "",
+    lastName: "",
+    name: "",
   });
 
   const toggleDropdown = () => {
@@ -22,31 +23,54 @@ export default function UserAccount() {
         .then((data) => {
           if (data && data.referenceData) {
             setReferenceData({
-              firstName: data.referenceData.firstName || '',
-              lastName: data.referenceData.lastName || '',
+              firstName: data.referenceData.firstName || "",
+              lastName: data.referenceData.lastName || "",
+              name: data.referenceData.name || "",
             });
           }
         })
-        .catch((error) => console.error('Error fetching user data:', error));
+        .catch((error) => console.error("Error fetching user data:", error));
     }
   }, [session]);
 
-  const getInitials = (firstName, lastName) => {
-    return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+  const getInitials = (firstName, lastName, name) => {
+    if (firstName && lastName) {
+      return (
+        firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase()
+      );
+    }
+    if (name) {
+      return name
+        .split(" ")
+        .map((n) => n.charAt(0).toUpperCase())
+        .join("");
+    }
+    return "L";
   };
 
   return (
     <div>
-      <div className="flex cursor-pointer items-center px-5" onClick={toggleDropdown}>
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sky-100 mr-2">
+      <div
+        className="flex cursor-pointer items-center px-5"
+        onClick={toggleDropdown}
+      >
+        <div className="mr-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sky-100">
           <span className="font-bold text-gray-600">
-            {referenceData.firstName && referenceData.lastName
-              ? getInitials(referenceData.firstName, referenceData.lastName)
-              : 'L'}
+            {getInitials(
+              referenceData.firstName,
+              referenceData.lastName,
+              referenceData.name,
+            )}
           </span>
         </div>
-        <h2 className="text-sky-300">Hello</h2>
-        <h3 className="font-bold">{referenceData.firstName || 'Loading...'}</h3>
+        <h2 className="font-bold text-sky-300">Hello</h2>
+        <span className="ml-1 font-bold text-gray-600">
+          {referenceData.firstName || referenceData.name ? (
+            referenceData.firstName || referenceData.name
+          ) : (
+            <div className="h-5 w-24 rounded-full bg-gray-300"></div>
+          )}
+        </span>
       </div>
 
       {isVisible && (
@@ -59,7 +83,7 @@ export default function UserAccount() {
 
           <div className="justify-center rounded bg-red-500 py-1">
             <button
-              onClick={() => signOut({ callbackUrl: '/login' })}
+              onClick={() => signOut({ callbackUrl: "/login" })}
               className="w-full text-white"
             >
               Sign out

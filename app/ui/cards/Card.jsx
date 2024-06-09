@@ -13,6 +13,11 @@ const Card = ({ doctor }) => {
       className="col-span-1 transform divide-y divide-gray-200 bg-white shadow transition-transform duration-300 hover:scale-95"
     >
       <div className="flex w-full items-center justify-between space-x-6 p-4">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sky-100">
+          <span className="font-bold text-gray-600">
+            {getInitials(doctor.firstName, doctor.lastName)}
+          </span>
+        </div>
         <div className="flex-1 truncate">
           <div className="flex items-center space-x-3">
             <h3 className="truncate text-sm font-medium text-sky-300">
@@ -33,11 +38,6 @@ const Card = ({ doctor }) => {
               {" "}
               {doctor.hospital && doctor.hospital.name}
             </p>
-          </span>
-        </div>
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sky-100">
-          <span className="font-bold text-gray-600">
-            {getInitials(doctor.firstName, doctor.lastName)}
           </span>
         </div>
       </div>

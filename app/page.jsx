@@ -1,110 +1,158 @@
-"use client";
-
-import { useSession, signIn } from "next-auth/react";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 import logo from "@/public/images/logo.png";
-import InputField from "@/app/ui/inputs/inputfield";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import Image from "next/image";
 import Link from "next/link";
+import { PiWarningCircleBold } from "react-icons/pi";
 
-export default function LoginPage() {
-  const { data: session } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session) {
-      console.log("Redirecting to dashboard...");
-      router.push("/patient/dashboard");
-    }
-  }, [session, router]);
-
-  const formik = useFormik({
-    initialValues: { email: "", password: "" },
-    validationSchema: Yup.object({
-      email: Yup.string().email("Invalid email address").required("Required"),
-      password: Yup.string()
-        .min(6, "Password must be at least 6 characters")
-        .required("Required"),
-    }),
-    onSubmit: async (values) => {
-      try {
-        const res = await signIn("credentials", {
-          email: values.email,
-          password: values.password,
-          redirect: false,
-        });
-        console.log("signIn response:", res); // Log response from signIn
-
-        if (!res.error) {
-          router.push("/patient/dashboard");
-        } else {
-          console.error("Login failed:", res.error);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    },
-  });
-
+export default function Example() {
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-sky-100">
-      <div className="rounded-lg bg-white shadow sm:max-w-2xl xl:p-0">
-        <div className="items-center pl-8">
-          <Image
-            src={logo}
-            width={200}
-            height="auto"
-            priority
-            alt="test logo"
-          />
-        </div>
-        <form onSubmit={formik.handleSubmit} className="px-4 py-4">
-          <InputField
-            id="email"
-            type="email"
-            name="email"
-            label="Email"
-            onChange={formik.handleChange}
-            value={formik.values.email}
-          />
-          {formik.touched.email && formik.errors.email && (
-            <p className="ml-2 text-xs text-red-500">{formik.errors.email}</p>
-          )}
-          <InputField
-            id="password"
-            type="password"
-            name="password"
-            label="Password"
-            onChange={formik.handleChange}
-            value={formik.values.password}
-          />
-          {formik.touched.password && formik.errors.password && (
-            <p className="ml-2 text-xs text-red-500">
-              {formik.errors.password}
+    <div className="flex min-h-screen flex-col">
+      {/* Header */}
+      <header className="bg-sky-100">
+        <Image
+          className=" cursor-pointer p-1"
+          src={logo}
+          height={100}
+          width={100}
+          priority={true}
+          alt="Test Logo"
+        />
+      </header>
+
+      {/* Main Content */}
+      <main className="flex flex-grow">
+        {/* Section 1 */}
+        <section
+          className="group relative flex w-1/2 items-center bg-cover bg-center p-8 transition-all duration-300 ease-in-out hover:w-10/12"
+          style={{ backgroundImage: `url('/images/PatientCover.png')` }}
+        >
+          <div className="absolute inset-0 bg-black opacity-5 transition-opacity duration-300 ease-in-out group-hover:opacity-50"></div>
+          <div className="relative max-w-sm text-white">
+            <h2 className="mb-4 text-2xl font-bold">Patient</h2>
+            <p className="max-w-sm text-white">
+              Welcome to our portal where you can book doctor appointments at
+              different hospitals. Manage your healthcare with ease by
+              registering or logging in. Our portal allows you to access medical
+              records and, schedule visits, Login or Register today to take
+              control of your health.
             </p>
-          )}
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className="mt-4 w-40 place-self-center rounded-md bg-primary p-2 text-lg text-white"
-              disabled={formik.isSubmitting}
-            >
-              Login
-            </button>
-          </div>
-          <div className="mt-4">
-            <p className="ml-2 text-xs text-gray-500">
-              Don't have an account?{" "}
-              <Link href="/register" className="hover:text-primary">
-                Sign Up
+            <div className="mt-4 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
+              <Link href="/login">
+                <button className="mr-2 rounded-md bg-primary p-2 text-xs text-white">
+                  Login
+                </button>
               </Link>
-            </p>
+              <span className="text-white">or</span>
+              <Link
+                href="/register"
+                className="ml-2 text-xs text-white hover:text-primary"
+              >
+                Register
+              </Link>
+            </div>
           </div>
-        </form>
-      </div>
+        </section>
+
+        {/* Section 2 */}
+        <section
+          className="group relative flex w-1/2 items-center bg-cover bg-center p-8 transition-all duration-300 ease-in-out hover:w-10/12"
+          style={{ backgroundImage: `url('/images/DoctorCover.png')` }}
+        >
+          <div className="absolute inset-0 bg-black opacity-5 transition-opacity duration-300 ease-in-out group-hover:opacity-50"></div>
+          <div className="relative max-w-sm text-white">
+            <h2 className="mb-4 text-2xl font-bold">Doctor</h2>
+            <p className="max-w-sm text-white">
+              Join our portal to enhance your practice. Check upcoming patient
+              appointments, review reasons for visits, and access previous visit
+              records for a comprehensive understanding of your patients'
+              health. If you're not register let your hospital, contact us.
+            </p>
+            <div className="mt-4 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
+              <Link href="/login">
+                <button className="mr-2 rounded-md bg-primary p-2 text-xs text-white">
+                  Login
+                </button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 3 */}
+        <section
+          className="group relative flex w-1/2 items-center bg-cover bg-center p-8 transition-all duration-300 ease-in-out hover:w-10/12"
+          style={{ backgroundImage: `url('/images/HospitalCover.png')` }}
+        >
+          <div className="absolute inset-0 bg-black opacity-5 transition-opacity duration-300 ease-in-out group-hover:opacity-50"></div>
+          <div className="relative max-w-sm text-white">
+            <h2 className="mb-4 text-2xl font-bold">Doctor</h2>
+            <p className="max-w-sm text-white">
+              Efficiently manage your doctors with our platform. Register your
+              hospital by emailing us at email@test.com and gain access to our
+              comprehensive management tools. Add as many doctors as needed to
+              streamline your healthcare services and improve patient care.
+            </p>
+            <div className="mt-4 opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
+              <Link rel="preload" href="/login">
+                <button className="mr-2 rounded-md bg-primary p-2 text-xs text-white">
+                  Login
+                </button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="h-9 overflow-hidden bg-sky-100 p-2 text-center text-black transition-all duration-300 ease-in-out hover:h-48">
+        <div className="flex flex-col items-center text-red-500">
+          <div className="flex">
+            {" "}
+            <PiWarningCircleBold className="mb-2 text-xl" />
+            <h4 className="font-bold">Disclaimer</h4>
+          </div>
+          <p className="max-w-lg text-xs">
+            This website is a mock-up created for a bachelor's graduation
+            project. To test all functionalities and features, feel free to use
+            the existing accounts based on the specified roles.
+          </p>
+        </div>
+        <div className="mt-4">
+          <ul className="flex justify-around px-5 text-xs">
+            <li>
+              <div className="text-left">
+                <h5 className="font-semibold">Patient</h5>
+                <p>
+                  <strong>Email:</strong>  kareem@g.com
+                </p>
+                <p>
+                  <strong>Password: </strong>123456
+                </p>
+              </div>
+            </li>
+            <li>
+              <div className="text-left">
+                <h5 className="font-semibold">Doctor</h5>
+                <p>
+                  <strong>Email:</strong>  k@gm.com
+                </p>
+                <p>
+                  <strong>Password: </strong>123456
+                </p>
+              </div>
+            </li>
+            <li>
+              <div className="text-left">
+                <h5 className="font-semibold"> Hospital</h5>
+                <p>
+                  <strong>Email:</strong> hospital@example.com
+                </p>
+                <p>
+                  <strong>Password: </strong>TestPassword123
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </footer>
     </div>
   );
 }
