@@ -10,10 +10,10 @@ export async function middleware(request) {
   );
 
   // Paths that do not require authentication
-  const publicPaths = ["/login", "/custom-error", "/api/auth", "/register", "/"];
+  const publicPaths = ["/login", "/custom-error", "/api/auth", "/register"];
  
   // Check if the path is one of the public paths
-  if (publicPaths.some((path) => pathname.startsWith(path))) {
+  if (publicPaths.some((path) => pathname.startsWith(path)) || pathname == "/") {
     return NextResponse.next();
   }
 
