@@ -83,7 +83,7 @@ export default function Example() {
         >
           <div className="absolute inset-0 bg-black opacity-5 transition-opacity duration-300 ease-in-out group-hover:opacity-50"></div>
           <div className="relative max-w-sm text-white">
-            <h2 className="mb-4 text-2xl font-bold">Doctor</h2>
+            <h2 className="mb-4 text-2xl font-bold">Hospital</h2>
             <p className="max-w-sm text-white">
               Efficiently manage your doctors with our platform. Register your
               hospital by emailing us at email@test.com and gain access to our
@@ -121,7 +121,7 @@ export default function Example() {
               <div className="text-left">
                 <h5 className="font-semibold">Patient</h5>
                 <p>
-                  <strong>Email:</strong>  kareem@g.com
+                  <strong>Email:</strong> kareem@g.com
                 </p>
                 <p>
                   <strong>Password: </strong>123456
@@ -132,7 +132,7 @@ export default function Example() {
               <div className="text-left">
                 <h5 className="font-semibold">Doctor</h5>
                 <p>
-                  <strong>Email:</strong>  k@gm.com
+                  <strong>Email:</strong> k@gm.com
                 </p>
                 <p>
                   <strong>Password: </strong>123456
