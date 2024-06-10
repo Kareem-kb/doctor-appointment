@@ -15,15 +15,17 @@ const DoctorAppointments = () => {
 
     const fetchAppointments = async () => {
       try {
-        const response = await fetch(`/api/appointments?doctorId=${session.user.referenceId}`);
+        const response = await fetch(
+          `/api/appointments?doctorId=${session.user.referenceId}`,
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch appointments');
+          throw new Error("Failed to fetch appointments");
         }
         const data = await response.json();
         setAppointments(data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching appointments:', error);
+        console.error("Error fetching appointments:", error);
         setLoading(false);
       }
     };
@@ -31,9 +33,40 @@ const DoctorAppointments = () => {
     fetchAppointments();
   }, [session?.user?._id]);
 
-
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="container mx-auto mt-4 max-h-screen space-y-4 overflow-y-auto">
+        {Array(2)
+          .fill()
+          .map((_, index) => (
+            <div
+              key={index}
+              className="flex animate-pulse flex-row gap-5 rounded-xl bg-white p-8 shadow-md"
+            >
+              <div className="flex-1">
+                <div className="h-6 w-1/3 rounded bg-gray-300"></div>
+                <div className="mt-4 space-y-2">
+                  <div className="h-4 w-1/2 rounded bg-gray-300"></div>
+                  <div className="h-4 w-1/3 rounded bg-gray-300"></div>
+                  <div className="h-4 w-1/4 rounded bg-gray-300"></div>
+                  <div className="h-4 w-2/3 rounded bg-gray-300"></div>
+                  <div className="h-4 w-1/2 rounded bg-gray-300"></div>
+                </div>
+              </div>
+
+              <div className="flex flex-1 flex-col items-center">
+                <div className="mb-4 h-4 w-1/3 rounded bg-gray-300"></div>
+                <div className="mb-2 h-4 w-1/2 rounded bg-gray-300"></div>
+                <div className="h-32 w-full rounded bg-gray-300"></div>
+              </div>
+
+              <div className="flex flex-1 flex-col items-center justify-center">
+                <div className="h-10 w-1/2 rounded bg-gray-300"></div>
+              </div>
+            </div>
+          ))}
+      </div>
+    );
   }
 
   return (
@@ -52,7 +85,10 @@ const DoctorAppointments = () => {
             <div className="flex-1">
               <h1 className="font-bold">Upcoming appointment</h1>
               <div className="mt-4">
-                <strong>{new Date(appointment.time).toLocaleTimeString()} - {new Date(appointment.time).toLocaleTimeString()}</strong>
+                <strong>
+                  {new Date(appointment.time).toLocaleTimeString()} -{" "}
+                  {new Date(appointment.time).toLocaleTimeString()}
+                </strong>
                 <p className="mt-2 text-sm text-gray-500">
                   {appointment.patient.firstName} {appointment.patient.lastName}
                 </p>
@@ -84,8 +120,11 @@ const DoctorAppointments = () => {
             </div>
 
             <div className="flex flex-1 flex-col items-center justify-center">
-              <Link href={`/doctor/appointment/${appointment._id}`} className="rounded-lg bg-blue-500 px-3 py-1 text-white hover:bg-blue-700 focus:outline-none">
-                  View appointment
+              <Link
+                href={`/doctor/appointment/${appointment._id}`}
+                className="rounded-lg bg-blue-500 px-3 py-1 text-white hover:bg-blue-700 focus:outline-none"
+              >
+                View appointment
               </Link>
             </div>
           </div>

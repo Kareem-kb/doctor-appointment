@@ -36,7 +36,7 @@ export const authOptions = {
           throw new Error("Incorrect password");
         }
 
-        return user.toObject(); // Convert Mongoose document to a plain JavaScript object
+        return user.toObject(); 
       },
     }),
   ],

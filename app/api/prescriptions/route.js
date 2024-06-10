@@ -25,13 +25,20 @@ export async function GET(request) {
   await connectDB();
   const { searchParams } = new URL(request.url);
   const patientId = searchParams.get("patientId");
+  const doctorId = searchParams.get("doctorId");
 
   try {
-    const query = patientId ? { patient: patientId } : {};
+    let query = {};
+    if (patientId) {
+      query.patient = patientId;
+    }
+    if (doctorId) {
+      query.doctor = doctorId;
+    }
 
     const prescriptions = await Prescription.find(query).populate(
       "doctor",
-      "firstName lastName specialization",
+      "_id firstName lastName specialization",
     );
     return NextResponse.json(prescriptions, { status: 200 });
   } catch (error) {
